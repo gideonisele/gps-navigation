@@ -1,0 +1,84 @@
+services:
+
+  db:
+    image: postgis/postgis:17-3.5
+    platform: linux/amd64
+    container_name: gps-postgres
+
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init:/docker-entrypoint-initdb.d
+
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+    networks:
+      - gps-network
+
+
+  backend:
+    build:
+      context: ./backend
+
+    container_name: gps-backend
+
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+
+    ports:
+      - "8000:8000"
+
+    depends_on:
+      db:
+        condition: service_healthy
+
+    volumes:
+      - ./backend:/app
+
+    networks:
+      - gps-network
+
+
+  frontend:
+    build:
+      context: ./frontend
+
+    container_name: gps-frontend
+
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8000
+
+    ports:
+      - "3000:3000"
+
+    depends_on:
+      - backend
+
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+
+    networks:
+      - gps-network
+
+
+volumes:
+  postgres_data:
+
+
+networks:
+  gps-network:
+    driver: bridge

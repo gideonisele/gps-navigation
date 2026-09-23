@@ -1,0 +1,73 @@
+ * {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+}
+
+body {
+  background: #f4f6f8;
+}
+
+main {
+  min-height: 100vh;
+}
+
+.header {
+  height: 90px;
+  display: flex;
+  align-items: center;
+  padding: 0 30px;
+  background: #111827;
+  color: white;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 26px;
+}
+
+.header p {
+  margin: 6px 0 0;
+  color: #cbd5e1;
+}
+
+.map-wrapper {
+  position: relative;
+}
+
+.map-container {
+  width: 100%;
+  height: calc(100vh - 90px);
+}
+
+.status-panel {
+  position: absolute;
+  z-index: 10;
+  top: 20px;
+  left: 20px;
+
+  min-width: 280px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  padding: 14px 18px;
+
+  background: white;
+
+  border-radius: 8px;
+
+  box-shadow:
+    0 4px 15px
+    rgba(0, 0, 0, 0.2);
+}
